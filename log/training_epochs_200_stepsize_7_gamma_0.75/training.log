@@ -198,3 +198,13 @@
 2025-01-27 22:54:21,281 - INFO - Epoch 199/200 | Train Loss: 0.000032 | Test Loss: 0.000056
 2025-01-27 22:54:21,700 - INFO - Epoch 200/200 | Train Loss: 0.000032 | Test Loss: 0.000056
 2025-01-27 22:54:22,121 - INFO - Epoch 201/200 | Train Loss: 0.000032 | Test Loss: 0.000056
+2025-01-28 16:40:48,480 - INFO - Epoch 2/200 | Train Loss: 0.040343 | Test Loss: 0.014495
+2025-01-28 16:40:48,906 - INFO - Epoch 3/200 | Train Loss: 0.011834 | Test Loss: 0.022353
+2025-01-28 16:44:16,110 - INFO - Epoch 2/200 | Train Loss: 0.045675 | Test Loss: 0.023142
+2025-01-28 16:44:16,534 - INFO - Epoch 3/200 | Train Loss: 0.014171 | Test Loss: 0.016681
+2025-01-28 16:44:16,921 - INFO - Epoch 4/200 | Train Loss: 0.010071 | Test Loss: 0.013521
+2025-01-28 16:44:17,258 - INFO - Epoch 5/200 | Train Loss: 0.008557 | Test Loss: 0.013606
+2025-01-28 16:44:17,603 - INFO - Epoch 6/200 | Train Loss: 0.009487 | Test Loss: 0.023177
+2025-01-28 16:44:17,941 - INFO - Epoch 7/200 | Train Loss: 0.009641 | Test Loss: 0.007356
+2025-01-28 16:44:18,277 - INFO - Epoch 8/200 | Train Loss: 0.007832 | Test Loss: 0.025908
+2025-01-28 16:44:18,614 - INFO - Epoch 9/200 | Train Loss: 0.007575 | Test Loss: 0.017161

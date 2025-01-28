@@ -94,8 +94,7 @@ def run_model(cfgs, train_dl, test_dl, min_val, max_val, device):
             save_model(cfgs, model, epoch, folder)
     all_y_true = torch.cat(all_y_true, dim=0)
     all_y_pred = torch.cat(all_y_pred, dim=0)
-    aligned_preds = draw(cfgs, all_y_pred, all_y_true, min_val, max_val)
-    return aligned_preds
+    # aligned_preds = draw(cfgs, all_y_pred, all_y_true, min_val, max_val)
 
 def draw(cfgs, all_y_pred, all_y_true, min_val, max_val):
     """
@@ -136,6 +135,7 @@ def predict(cfgs, test_dl, min_val, max_val, device):
     model = load_model(cfgs, 200, device)
     h_n = None
     c_n = None
+
     predictlist = []
     originlist = []
     model.eval()
@@ -159,14 +159,17 @@ if __name__ == '__main__':
                         help="path of config file")
     parser.add_argument('--dataroot', type=str, default='./data.csv',
                         help='path of data file')
+    parser.add_argument('--train', type=bool, default=False)
+    parser.add_argument('--predict', type=bool, default=True)
     opt = parser.parse_args()
     cfgs = config_loader(opt.cfgs)
 
     train_dl, test_dl, min_val, max_val= initialization(cfgs)
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    # aligned_preds = run_model(cfgs, train_dl, test_dl, min_val, max_val, device)
-    # print(aligned_preds.shape)
-    
-    aligned_preds = predict(cfgs, test_dl, min_val, max_val, device)
+    if opt.train:
+        run_model(cfgs, train_dl, test_dl, min_val, max_val, device)
+    if opt.predict:
+        aligned_preds = predict(cfgs, test_dl, min_val, max_val, device)
 
     
+

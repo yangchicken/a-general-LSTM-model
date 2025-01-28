@@ -4,3 +4,5 @@
 
 ## how to use
 
+![af](./figure/af.png)
+![am](./figure/am.png)
