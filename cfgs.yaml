@@ -1,0 +1,22 @@
+input_size : 2
+hidden_size : 48
+num_layers : 2
+dropout_rate : 0
+batch_first : True
+seq_len : 20
+output_size : 2
+inputs_cols : [0, 1]
+label_cols : [0, 1]
+
+batch_size : 2
+split_rate : 0.8
+lr : 0.001
+epochs : 200
+predict_data : 3
+
+step_size : 7
+gamma : 0.75
+
+dataroot : './data.csv'
+save_model_path : "./cheakpoint"
+log_path : "./log"
