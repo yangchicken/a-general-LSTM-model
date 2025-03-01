@@ -21,4 +21,3 @@ If you want to make predictions on your own data, simply modify the correspondin
 The data used in this model is simulated data representing the forces and moments acting on a ship over time. The relationship between the predicted values and the true values is shown in the plots below.
 ![af](./figure/af.png)
 ![am](./figure/am.png)
-
