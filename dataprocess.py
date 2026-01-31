@@ -11,40 +11,40 @@ def config_loader(path):
 
 def normalize_data(data):
     """
-    将数据逐列归一化到 [0, 1]。
-    参数:
-        data: 二维 NumPy 数组 (samples, features)，原始数据
-    返回:
-        normalized_data: 归一化后的数据
-        min_vals: 每列数据的最小值 (1D 数组)
-        max_vals: 每列数据的最大值 (1D 数组)
+    Normalize the data column by column to the range [0, 1]. 
+    Parameters:
+    data: A 2D NumPy array (samples, features) containing the original data.
+    Returns:
+    normalized_data: The normalized data.
+    min_vals: The minimum value of each column (1D array).
+    max_vals: The maximum value of each column (1D array).
     """
-    # 保证输入是二维数组
+    # Ensure the input is a two-dimensional array.
     if data.ndim == 1:
         data = data[:, np.newaxis]
     
-    min_vals = np.min(data, axis=0)  # 每列最小值
-    max_vals = np.max(data, axis=0)  # 每列最大值
-    normalized_data = (data - min_vals) / (max_vals - min_vals + 1e-8)  # 广播机制
+    min_vals = np.min(data, axis=0)  # Minimum value of each column
+    max_vals = np.max(data, axis=0)  # Maximum value of each column
+    normalized_data = (data - min_vals) / (max_vals - min_vals + 1e-8)  # Broadcasting mechanism
     return normalized_data, min_vals, max_vals
 
 
 def denormalize_data(normalized_data, min_vals, max_vals, cfgs):
     """
-    将归一化后的数据逐列还原到原始范围。
-    参数:
-        normalized_data: 归一化后的数据 (samples, features)
-        min_vals: 每列的最小值 (1D 数组)
-        max_vals: 每列的最大值 (1D 数组)
-    返回:
-        original_data: 还原后的数据
+    Restores the normalized data column by column to its original range. 
+    Parameters:
+    normalized_data: The normalized data (samples, features)
+    min_vals: The minimum value of each column (1D array)
+    max_vals: The maximum value of each column (1D array)
+    Returns:
+    original_data: The restored data
     """
     max_vals = np.array(max_vals)
     min_vals = np.array(min_vals)
     label_cols = cfgs["label_cols"]
     if not isinstance(label_cols, list):
             label_cols = [label_cols]
-    # 保证输入是二维数组
+    # Ensure the input is a two-dimensional array.
     if normalized_data.ndim == 1:
         normalized_data = normalized_data[:, np.newaxis]
     original_data = normalized_data * (max_vals[label_cols] - min_vals[label_cols] + 1e-8) + min_vals[label_cols]   
@@ -52,9 +52,9 @@ def denormalize_data(normalized_data, min_vals, max_vals, cfgs):
 
 def read_process_data(cfgs):
     '''
-    返回:
-        x (numpy.ndarray): 训练数据，形状为 (样本数, seq_len, len(input_cols))。
-        y (numpy.ndarray): 目标数据，形状为 (样本数, len(label_cols))。
+    Returns:
+    x (numpy.ndarray): Training data, with shape (number of samples, seq_len, len(input_cols)). 
+    y (numpy.ndarray): Target data, with shape (number of samples, len(label_cols)).
     '''
     input_cols = cfgs["inputs_cols"]
     label_cols = cfgs["label_cols"]
@@ -68,7 +68,7 @@ def read_process_data(cfgs):
 
         if not isinstance(label_cols, list):
             label_cols = [label_cols]
-        if any(col >= data.shape[1] for col in input_cols + label_cols): #逻辑合并， 合并成一个列表
+        if any(col >= data.shape[1] for col in input_cols + label_cols): # Logically combine them, merging them into a single list.
             raise ValueError("指定的列索引超出csv文件的列范围")
         
         inputs = data.iloc[:, input_cols].values
@@ -96,12 +96,12 @@ def makedataloader(x_train, y_train, x_test, y_test, cfgs):
         def __getitem__(self, index):
             input = self.inputs[index]
             label = self.labels[index]
-            # 检查输入是否为嵌套结构，如果是，转换为正确的数值类型
+            # Check if the input is a nested structure; if so, convert it to the correct numerical type.
             if isinstance(input, np.ndarray):
-                input = input.astype(np.float32)  # 转换为 float64 类型
+                input = input.astype(np.float32)  # Convert to float64 type
             if isinstance(label, np.ndarray):
                 label = label.astype(np.float32)  
-            # 将数据转换为 Tensor
+            # Convert the data to a Tensor.
             input = torch.tensor(input)  
             label = torch.tensor(label)  
             return input, label
@@ -122,7 +122,7 @@ def makedataloader(x_train, y_train, x_test, y_test, cfgs):
 
 def adjust_batch_first(inputs, labels, cfgs):
     if not cfgs["batch_first"]:
-        # 如果 batch_first 为 False，则需要调整维度顺序
+        # If `batch_first` is False, the dimension order needs to be adjusted.
         inputs = inputs.permute(1, 0, 2)  # (seq_len, batch_size, input_size)
         labels = labels.permute(1, 0, 2)  # (seq_len, batch_size, input_size)
     return inputs, labels

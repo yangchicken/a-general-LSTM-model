@@ -11,7 +11,8 @@ from log import setup_logger
 
 def initialization(cfgs): 
     '''
-        初始化,包括读取数据,数据预处理,创建dataset,dataloader
+        Initialization, including reading data, data preprocessing, 
+        creating the dataset, and creating the dataloader.
     '''
     x_train, y_train, x_test, y_test ,min_val, max_val= read_process_data(cfgs)
     train_dl, test_dl =  makedataloader(x_train, y_train, x_test, y_test, cfgs)
@@ -22,7 +23,7 @@ def initialization(cfgs):
 
 def run_model(cfgs, train_dl, test_dl, min_val, max_val, device):
     '''
-        模型训练，预测
+        Model training, prediction
     '''
     epochs = cfgs["epochs"]
     model = LSTMnet(cfgs).to(device)
@@ -31,13 +32,13 @@ def run_model(cfgs, train_dl, test_dl, min_val, max_val, device):
     gamma=cfgs["gamma"]
     exp_lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=gamma)
     loss_fn = nn.MSELoss()
-    # 用于保存所有测试预测和真实值
+    # Used to store all test predictions and true values.
     all_y_pred = []
     all_y_true = []
 
     folder = f"training_epochs_{epochs}_stepsize_{step_size}_gamma_{gamma}"
     log_path = os.path.join(cfgs["log_path"], folder)
-    # 设置日志记录器
+    # Set up the logger.
     logger = setup_logger(log_path)
 
     for epoch in range(1, epochs+1):
@@ -53,7 +54,7 @@ def run_model(cfgs, train_dl, test_dl, min_val, max_val, device):
                 x, y = x.to('cuda'), y.to('cuda')
                 y_pred, hidden= model(x, h_n, c_n)
             h_n, c_n = hidden
-            h_n.detach_(), c_n.detach_()    # 去掉梯度信息
+            h_n.detach_(), c_n.detach_()    # Remove gradient information.
 
             loss = loss_fn(y_pred, y)
             optimizer.zero_grad()
@@ -75,14 +76,14 @@ def run_model(cfgs, train_dl, test_dl, min_val, max_val, device):
             x, y = adjust_batch_first(x, y, cfgs)
             if torch.cuda.is_available():
                 x, y = x.to('cuda'), y.to('cuda')
-            y_pred, hidden= model(x, h_n, c_n) #y_pred.shape (batch_size, predict_data, output_size)
+            y_pred, hidden= model(x, h_n, c_n) # y_pred.shape (batch_size, predict_data, output_size)
             h_n, c_n = hidden
             h_n.detach_(), c_n.detach_()
             loss = loss_fn(y_pred, y)
             test_sample += 1
             with torch.no_grad():
                 test_loss += loss.item()
-            # 保存预测结果和真实值
+            # Save the predicted results and the actual values.
             if epoch == epochs: 
                 all_y_pred.append(y_pred.cpu().detach())
                 all_y_true.append(y.cpu().detach())
@@ -98,10 +99,10 @@ def run_model(cfgs, train_dl, test_dl, min_val, max_val, device):
 
 def draw(cfgs, all_y_pred, all_y_true, min_val, max_val):
     """
-    处理预测结果和真实值，绘制图像
+    Process the predicted results and actual values, and then plot the graph.
     """
-    predict_steps = cfgs["predict_data"]  # 预测步数
-    output_size = cfgs["output_size"]    # 每步输出的维度
+    predict_steps = cfgs["predict_data"]  # Predicted number of steps
+    output_size = cfgs["output_size"]    # The dimensions of the output at each step.
     file_path = cfgs["dataroot"]
     label_cols = cfgs["label_cols"]
 
@@ -118,19 +119,27 @@ def draw(cfgs, all_y_pred, all_y_true, min_val, max_val):
     # for i in range(all_y_pred.shape[0]):
     #     aligned_preds[i] += all_y_pred[i, 0].cpu().detach().numpy()
     all_y_true = all_y_true[:, 0, :].cpu().detach().numpy()
-    #将归一化后的数据还原成原数据
+    # Convert the normalized data back to the original data.
     aligned_preds = denormalize_data(aligned_preds, min_val, max_val, cfgs)
     all_y_true = denormalize_data(all_y_true, min_val, max_val, cfgs)
-    #得到表头
+    # Get the table header
     header = pd.read_csv(file_path, nrows=0).columns.tolist()
     header = [header[i] for i in label_cols]
+    
+    # Create savefig folder if it doesn't exist
+    save_dir = "savefig"
+    os.makedirs(save_dir, exist_ok=True)
+    
     for i in range(output_size):
+        plt.figure()
         plt.plot(all_y_true[:, i].flatten(), label = f"True Data of {header[i]}")
         plt.plot(aligned_preds[:, i].flatten(), label = f"predicted Date of {header[i]}", linestyle = "dashed")
         plt.legend()
-        plt.show()
-
+        plt.savefig(os.path.join(save_dir, f"{header[i]}_prediction.png"), dpi=100, bbox_inches='tight')
+        plt.close()
+        print(f"Figure saved to {os.path.join(save_dir, f'{header[i]}_prediction.png')}")
     return aligned_preds[-predict_steps, :]
+
 def predict(cfgs, test_dl, min_val, max_val, device):
     model = load_model(cfgs, 200, device)
     h_n = None

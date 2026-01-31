@@ -18,5 +18,5 @@ step_size : 7
 gamma : 0.75
 
 dataroot : './data.csv'
-save_model_path : "./cheakpoint"
+save_model_path : "./checkpoint"
 log_path : "./log"

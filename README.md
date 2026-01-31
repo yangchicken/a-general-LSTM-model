@@ -1,13 +1,14 @@
-# A General LSTM Model
+# Ship data LSTM Model
 
 An attempt to build a highly versatile LSTM model. By adjusting the parameters in the source code, this model can be used for LSTM prediction across various types of data, making "experimentation" (refinement) simple. LSTM, with its introduction of memory cells and gate mechanisms, addresses the long-term dependency problem of RNNs. Since its inception, it has been widely applied in fields such as natural language processing and time series prediction.
 
 ## How to Use
 
-If you want to train the model:
+I chose to use [uv](https://docs.astral.sh/uv/getting-started/installation/) for managing my Python environment, If you want to train the model, you can run the following code.
 
 ```python
-python main.py --train True
+uv sync
+uv run main.py --train True
 ```
 
 If you want to make predictions on your own data, simply modify the corresponding parameters in the `cfgs.yaml` file.

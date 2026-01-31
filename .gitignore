@@ -1,5 +1,20 @@
 __pycache__/
 *.pyc
-.env
 .vscode
 readme.md
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# data
+.data
+
+# log
+.log
+.savefig

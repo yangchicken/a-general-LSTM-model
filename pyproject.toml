@@ -1,0 +1,35 @@
+[project]
+name = "lstm-mi"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy<2.0",
+    "torch>=2.9.1",
+    "torchvision>=0.24.1",
+    "torchaudio>=2.9.1",
+    "matplotlib<=3.9.0",
+    "pandas>=2.3.3",
+    "pyyaml>=6.0.3",
+    "requests>=2.32.5",
+    "matplotlib-inline>=0.2.1",
+    "ipython>=8.38.0",
+]
+
+[[tool.uv.index]]
+url = "https://mirrors.aliyun.com/pypi/simple"
+default = true
+
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cu126", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
+torchvision = [
+  { index = "pytorch-cu126", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
