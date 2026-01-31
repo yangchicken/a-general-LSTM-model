@@ -13,8 +13,8 @@ env.bak/
 venv.bak/
 
 # data
-data
+data/
 
 # log
-log
-savefig
+log/
+savefig/
